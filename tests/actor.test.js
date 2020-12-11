@@ -54,10 +54,42 @@ describe('test actor model', () => {
       .get(`/actor/${expectation.actorId}`)
       .expect(200);
 
-      console.log(res.body);
-      console.log(expectation);
     expect(expectation).toEqual(res.body);
 
+  });
+
+  it('find all actors with associated movies', async() =>  {
+
+    await Promise.all(movieData.map(movie => Movie.insert(movie)));
+
+    await Promise.all(actorData.map(actor => Actor.insert(actor)));
+
+    const expectation = [
+      { 
+        'actorId': expect.any(String), 
+        'actorName': 'Seth Rogen', 
+        'actorBirthYear': '1982',
+        movies: ['Lion King', 'Pineapple Express', 'Superbad', 'The Disaster Artist', 'The Interview']
+      },
+      { 
+        'actorId': expect.any(String), 
+        'actorName': 'James Earl Jones', 
+        'actorBirthYear': '1931',
+        movies: ['Lion King', 'Star Wars IV: A New Hope']
+      },
+      { 
+        'actorId': expect.any(String), 
+        'actorName': 'Donald Glover', 
+        'actorBirthYear': '1983',
+        movies: ['Lion King', 'Mystery Team', 'Solo: A Star Wars Story',  'Spider-Man: Homecoming']
+      }
+    ];
+
+    const res = await request(app)
+      .get('/actor')
+      .expect(200);
+
+    expect(expectation).toEqual(res.body);
 
   });
 
