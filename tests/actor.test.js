@@ -42,10 +42,21 @@ describe('test actor model', () => {
 
     await Promise.all(movieData.map(movie => Movie.insert(movie)));
 
-    await Promise.all(actorData.map(actor => Actor.insert(actor, actor.movies)));
+    await Promise.all(actorData.map(actor => Actor.insert(actor)));
 
+    const expectation = {
+      'actorId': '1', 
+      'actorName': 'Donald Glover', 
+      'actorBirthYear': '1983',
+      movies: ['Mystery Team', 'Solo: A Star Wars Story', 'Lion King', 'Spider-Man: Homecoming']
+    };
+    const res = await request(app)
+      .get(`/actor/${expectation.actorId}`)
+      .expect(200);
 
-
+      console.log(res.body);
+      console.log(expectation);
+    expect(expectation).toEqual(res.body);
 
 
   });

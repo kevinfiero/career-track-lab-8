@@ -15,7 +15,7 @@ CREATE TABLE ACTORS (
 );
 
 CREATE TABLE ACTORS_MOVIES_RELATIONSHIP (
-	actor_id INTEGER,
-	movie_id INTEGER,
+	actor_id BIGINT,
+	movie_id BIGINT,
 	PRIMARY KEY(actor_id, movie_id)
 );
