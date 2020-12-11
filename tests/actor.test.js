@@ -16,6 +16,23 @@ describe('test actor model', () => {
   });
 
   it('insert actor', async() => {
+    const newActor = {
+      'actorName': 'Donald Glover',
+      'actorBirthYear': '1983'
+    };
+
+    const expectation = {
+      'actorId': '1',
+      'actorName': 'Donald Glover',
+      'actorBirthYear': '1983'
+    };
+
+    const res = await request(app)
+      .post('/actor')
+      .send(newActor)
+      .expect(200);
+
+    expect(expectation).toEqual(res.body);
 
   });
 
