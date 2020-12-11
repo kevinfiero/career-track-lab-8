@@ -14,6 +14,7 @@ describe('test actor model', () => {
   });
 
   afterAll(() => {
+    pool.query(fs.readFileSync('./lib/sql/setup.sql', 'utf-8'));
     return pool.end();
   });
 
@@ -48,7 +49,7 @@ describe('test actor model', () => {
       'actorId': '1', 
       'actorName': 'Donald Glover', 
       'actorBirthYear': '1983',
-      movies: ['Mystery Team', 'Solo: A Star Wars Story', 'Lion King', 'Spider-Man: Homecoming']
+      movies: ['Lion King', 'Mystery Team', 'Solo: A Star Wars Story',  'Spider-Man: Homecoming']
     };
     const res = await request(app)
       .get(`/actor/${expectation.actorId}`)
@@ -87,6 +88,61 @@ describe('test actor model', () => {
 
     const res = await request(app)
       .get('/actor')
+      .expect(200);
+
+    expect(expectation).toEqual(res.body);
+
+  });
+
+  it('update actor information', async() => {
+
+    const wrongActor = {
+      'actorName': 'Dold Glover',
+      'actorBirthYear': '1900'
+    };
+
+    await Actor.insert(wrongActor);
+
+    const fixedActor = {
+      'actorName': 'Donald Glover',
+      'actorBirthYear': '1983'
+    };
+
+    const expectation = {
+      'actorId': '1',
+      'actorName': 'Donald Glover',
+      'actorBirthYear': '1983'
+    };
+
+    await Actor.insert(fixedActor);
+
+    const res = await request(app)
+      .put(`/actor/${expectation.actorId}`)
+      .send(fixedActor)
+      .expect(200);
+
+    expect(expectation).toEqual(res.body);
+
+  });
+
+  it('delete actor information', async() => {
+
+    const newActor = {
+      'actorName': 'Donald Glover',
+      'actorBirthYear': '1983'
+    };
+
+    await Actor.insert(newActor);
+
+    const expectation = {
+      'actorId': '1',
+      'actorName': 'Donald Glover',
+      'actorBirthYear': '1983'
+    };
+
+    const res = await request(app)
+      .put(`/actor/${expectation.actorId}`)
+      .send(newActor)
       .expect(200);
 
     expect(expectation).toEqual(res.body);
