@@ -2,6 +2,8 @@ const request = require('supertest');
 const app = require('../lib/app');
 const pool = require('../lib/utils/pool');
 const fs = require('fs');
+const movieData = require('../lib/data/moviesData');
+const actorData = require('../lib/data/actorsData');
 const Actor = require('../lib/models/actor');
 const Movie = require('../lib/models/movie');
 
@@ -33,6 +35,18 @@ describe('test actor model', () => {
       .expect(200);
 
     expect(expectation).toEqual(res.body);
+
+  });
+
+  it('find actor by id with associated movies', async() =>  {
+
+    await Promise.all(movieData.map(movie => Movie.insert(movie)));
+
+    await Promise.all(actorData.map(actor => Actor.insert(actor, actor.movies)));
+
+
+
+
 
   });
 
